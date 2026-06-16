@@ -15,7 +15,7 @@
   --border: rgba(9,30,66,.08); --border-med: rgba(9,30,66,.15);
   --t1: #091E42; --t2: #3D5077; --t3: #7A8AAA;
   --green: #1D9E75; --amber: #B86E0A;
-  --c-past: #6B7A99; --c-next: #704EFD; --c-future: #0891b2;
+  --c-past: #6B7A99; --c-next: #704EFD; --c-future: #B86E0A; --c-future-bg: #FEF3C7; --c-future-text: #92400e;
   --r-lg: 14px; --shadow: 0 1px 3px rgba(9,30,66,.06);
 }
 body { font-family:'Inter',-apple-system,sans-serif; background:var(--bg); color:var(--t1); font-size:15px; line-height:1.6; -webkit-font-smoothing:antialiased; min-height:100vh; padding-bottom:72px; }
@@ -30,10 +30,10 @@ body { font-family:'Inter',-apple-system,sans-serif; background:var(--bg); color
 .tz-btn.active { background:rgba(255,255,255,.16); color:#fff; }
 
 /* HERO */
-.hero { background:var(--purple); padding:2.5rem 1.5rem 2.25rem; position:relative; overflow:hidden; }
+.hero { background:var(--purple); padding:2.5rem 0 2.25rem; position:relative; overflow:hidden; }
 .hero::after { content:''; position:absolute; right:-100px; top:-100px; width:380px; height:380px; border-radius:50%; background:radial-gradient(circle,rgba(255,255,255,.10) 0%,transparent 65%); pointer-events:none; }
 .hero::before { content:''; position:absolute; left:-60px; bottom:-80px; width:280px; height:280px; border-radius:50%; background:radial-gradient(circle,rgba(9,30,66,.18) 0%,transparent 70%); pointer-events:none; }
-.hero-inner { max-width:960px; margin:0 auto; position:relative; z-index:1; }
+.hero-inner { max-width:960px; margin:0 auto; position:relative; z-index:1; padding:0 1.5rem; }
 .hero-logo { display:block; height:40px; margin-bottom:1.5rem; filter:brightness(0) invert(1); opacity:.95; }
 .eyebrow { display:inline-flex; align-items:center; gap:6px; font-size:11px; font-weight:600; letter-spacing:.08em; text-transform:uppercase; color:rgba(255,255,255,.65); margin-bottom:.6rem; }
 .hero-title { font-size:24px; font-weight:600; color:#fff; line-height:1.3; margin-bottom:1.25rem; max-width:700px; }
@@ -52,23 +52,23 @@ body { font-family:'Inter',-apple-system,sans-serif; background:var(--bg); color
 .progress-label { font-size:12px; color:rgba(255,255,255,.6); white-space:nowrap; }
 
 /* STATUS STRIP */
-.status-strip { background:#fff; border-bottom:1px solid var(--border); padding:.65rem 1.5rem; }
-.status-strip-inner { max-width:960px; margin:0 auto; display:flex; align-items:center; gap:.6rem; flex-wrap:wrap; }
+.status-strip { background:#fff; border-bottom:1px solid var(--border); padding:.65rem 0; }
+.status-strip-inner { max-width:960px; margin:0 auto; display:flex; align-items:center; gap:.6rem; flex-wrap:wrap; padding:0 1.5rem; }
 .status-filter-btn { display:inline-flex; align-items:center; gap:5px; font-size:11px; font-weight:600; padding:5px 11px; border-radius:20px; border:1.5px solid transparent; cursor:pointer; transition:all .15s; white-space:nowrap; background:transparent; }
 .sf-all    { color:var(--t2); border-color:var(--border-med); }
 .sf-past   { color:var(--c-past); border-color:rgba(107,122,153,.25); background:rgba(107,122,153,.07); }
 .sf-next   { color:var(--c-next); border-color:rgba(112,78,253,.3); background:rgba(112,78,253,.06); }
-.sf-future { color:var(--c-future); border-color:rgba(8,145,178,.25); background:rgba(8,145,178,.06); }
+.sf-future { color:#92400e; border-color:rgba(184,110,10,.3); background:#FFFBEB; }
 .status-filter-btn.active { color:#fff !important; background:var(--purple) !important; border-color:var(--purple) !important; }
 .sf-dot { width:6px; height:6px; border-radius:50%; flex-shrink:0; }
 .sf-past .sf-dot { background:var(--c-past); }
 .sf-next .sf-dot { background:var(--c-next); }
-.sf-future .sf-dot { background:var(--c-future); }
+.sf-future .sf-dot { background:#B86E0A; }
 .strip-hint { margin-left:auto; font-size:12px; color:var(--t3); }
 
 /* FILTERS */
-.filters-bar { background:#fff; border-bottom:1px solid var(--border); padding:.7rem 1.5rem; overflow-x:auto; -webkit-overflow-scrolling:touch; }
-.filters-inner { max-width:960px; margin:0 auto; display:flex; gap:5px; align-items:center; min-width:max-content; }
+.filters-bar { background:#fff; border-bottom:1px solid var(--border); padding:.7rem 0; overflow-x:auto; -webkit-overflow-scrolling:touch; }
+.filters-inner { max-width:960px; margin:0 auto; display:flex; gap:5px; align-items:center; min-width:max-content; padding:0 1.5rem; }
 .filter-label { font-size:12px; color:var(--t3); font-weight:500; margin-right:4px; }
 .chip { font-size:12px; font-weight:500; padding:5px 12px; border-radius:20px; border:1px solid var(--border-med); background:transparent; color:var(--t2); cursor:pointer; transition:all .15s; white-space:nowrap; }
 .chip:hover { border-color:var(--purple); color:var(--purple); }
@@ -115,14 +115,14 @@ body { font-family:'Inter',-apple-system,sans-serif; background:var(--bg); color
 .session-num { font-size:10px; font-weight:700; color:#fff; background:var(--navy); border-radius:5px; padding:4px 8px; white-space:nowrap; min-width:64px; text-align:center; letter-spacing:.02em; }
 .s-past .session-num { background:#8A94AD; }
 .s-next .session-num { background:var(--purple); }
-.s-future .session-num { background:var(--c-future); }
+.s-future .session-num { background:#B86E0A; }
 
 /* STATUS BADGE */
 .status-badge { display:inline-flex; align-items:center; gap:4px; font-size:10px; font-weight:700; padding:3px 8px; border-radius:4px; white-space:nowrap; flex-shrink:0; letter-spacing:.01em; }
 .status-badge .dot { width:5px; height:5px; border-radius:50%; flex-shrink:0; }
 .sb-past   { background:#E8EAF0; color:var(--c-past); } .sb-past .dot { background:var(--c-past); }
 .sb-next   { background:#EEE9FF; color:var(--c-next); } .sb-next .dot { background:var(--c-next); }
-.sb-future { background:#E0F5FB; color:var(--c-future); } .sb-future .dot { background:var(--c-future); }
+.sb-future { background:#FEF3C7; color:#92400e; } .sb-future .dot { background:#B86E0A; }
 
 .session-info { min-width:0; }
 .session-title-text { font-size:14px; font-weight:500; color:var(--t1); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
@@ -176,21 +176,28 @@ body { font-family:'Inter',-apple-system,sans-serif; background:var(--bg); color
 .cal-event { font-size:10px; font-weight:500; background:var(--purple); color:#fff; border-radius:3px; padding:2px 4px; margin-bottom:2px; line-height:1.3; overflow:hidden; white-space:nowrap; text-overflow:ellipsis; }
 .cal-event.ev-past { background:#8A94AD; }
 .cal-event.ev-next { background:var(--purple); }
-.cal-event.ev-future { background:var(--c-future); }
+.cal-event.ev-future { background:#B86E0A; }
 
 /* PRINT */
 @media print {
-  .topbar,.wa-bar,.status-strip,.filters-bar,.hero-actions,.action-row,.next-banner,.cal-overlay { display:none !important; }
-  body { padding:0; background:#fff; font-size:11px; }
-  .hero { padding:1rem; -webkit-print-color-adjust:exact; print-color-adjust:exact; }
-  .hero-title { font-size:16px; }
-  .module-block { break-inside:avoid; border:1px solid #ddd; margin-bottom:1rem; box-shadow:none; }
-  .session-card { border:1px solid #eee; border-radius:4px; }
-  .session-card.s-past { opacity:.7; }
-  .session-detail { display:block !important; }
-  .chevron-icon { display:none; }
-  .main { padding:.5rem; }
+  body > *:not(.print-table-wrap) { display:none !important; }
+  .print-table-wrap { display:block !important; }
 }
+.print-table-wrap {
+  display:none;
+  position:fixed; inset:0; background:#fff; z-index:9999;
+  padding:2rem; font-family:'Inter',sans-serif;
+}
+.print-table-wrap.show { display:block; }
+.print-header { margin-bottom:1.5rem; }
+.print-header h1 { font-size:18px; font-weight:600; color:#091E42; margin-bottom:.25rem; }
+.print-header p  { font-size:12px; color:#7A8AAA; }
+.print-table { width:100%; border-collapse:collapse; font-size:12px; }
+.print-table th { background:#704EFD; color:#fff; padding:8px 10px; text-align:left; font-weight:600; font-size:11px; letter-spacing:.04em; text-transform:uppercase; }
+.print-table td { padding:7px 10px; border-bottom:1px solid #eee; vertical-align:top; color:#091E42; }
+.print-table tr:nth-child(even) td { background:#F5F6FB; }
+.print-table tr:hover td { background:#EEE9FF; }
+.print-close { position:absolute; top:1rem; right:1rem; background:#704EFD; color:#fff; border:none; border-radius:50%; width:32px; height:32px; font-size:18px; cursor:pointer; display:flex; align-items:center; justify-content:center; }
 
 /* STATES */
 .state-screen { display:flex; flex-direction:column; align-items:center; justify-content:center; min-height:40vh; gap:1rem; padding:2rem; text-align:center; }
@@ -373,21 +380,37 @@ function getUTCOffsetForDate(date, tz) {
 const TZ_ZONES = { CL:'America/Santiago', MX:'America/Mexico_City', CO:'America/Bogota' };
 
 // Convierte hora CL (HH:MM string) a otro país, considerando DST real de ambos
+function parse24h(timeStr) {
+  if (!timeStr) return null;
+  // Already 24h: "18:00"
+  const m24 = timeStr.match(/^(\d{1,2}):(\d{2})$/);
+  if (m24) return { h: parseInt(m24[1]), m: m24[2] };
+  // 12h format: "06:00 PM"
+  const m12 = timeStr.match(/(\d{1,2}):(\d{2})\s*(AM|PM)/i);
+  if (m12) {
+    let h = parseInt(m12[1]);
+    const period = m12[3].toUpperCase();
+    if (period === 'PM' && h !== 12) h += 12;
+    if (period === 'AM' && h === 12) h = 0;
+    return { h, m: m12[2] };
+  }
+  return null;
+}
+
 function convertTime(timeStr, dateISO, fromTZ, toTZ) {
   if (!timeStr || !dateISO) return timeStr;
-  const m = timeStr.match(/^(\d{1,2}):(\d{2})$/);
-  if (!m) return timeStr;
-  const [_, hh, mm] = m;
+  const parsed = parse24h(timeStr);
+  if (!parsed) return timeStr;
 
   const dateRef = new Date(dateISO + 'T12:00:00Z');
   const fromOffset = getUTCOffsetForDate(dateRef, TZ_ZONES[fromTZ]);
   const toOffset   = getUTCOffsetForDate(dateRef, TZ_ZONES[toTZ]);
   const diff = toOffset - fromOffset;
 
-  let hours = parseInt(hh) + diff;
+  let hours = parsed.h + diff;
   if (hours < 0)  hours += 24;
   if (hours >= 24) hours -= 24;
-  return `${String(Math.round(hours)).padStart(2,'0')}:${mm}`;
+  return `${String(Math.round(hours)).padStart(2,'0')}:${parsed.m}`;
 }
 
 // ── CONFIG ───────────────────────────────────────────────────────────────────
@@ -482,9 +505,15 @@ function countdown(diff) {
 
 // ── HORARIO CONVERSION ────────────────────────────────────────────────────────
 // La API devuelve horarios CL. Para otros países, convertimos en tiempo real.
+function fmt24(timeStr) {
+  const p = parse24h(timeStr);
+  if (!p) return timeStr || '—';
+  return `${String(p.h).padStart(2,'0')}:${p.m}`;
+}
+
 function getHorario(s, tz) {
   const clH = s.horarios?.CL || { inicio:'', fin:'' };
-  if (tz === 'CL') return clH;
+  if (tz === 'CL') return { inicio: fmt24(clH.inicio), fin: fmt24(clH.fin) };
   return {
     inicio: convertTime(clH.inicio, s.fecha, 'CL', tz),
     fin:    convertTime(clH.fin,    s.fecha, 'CL', tz)
@@ -495,10 +524,20 @@ function getHorario(s, tz) {
 // Detecta si ya hay viñetas/bullets y evita duplicarlos
 function cleanContents(raw) {
   if (!raw || !raw.length) return [];
-  return raw.map(item => {
-    // Quita viñetas, bullets, guiones al inicio
-    return item.replace(/^[\s•·\-–—*▪▸►◦○●]+/, '').trim();
-  }).filter(c => c.length > 1);
+  const result = [];
+  raw.forEach(item => {
+    const text = (item || '').trim();
+    // If item contains inline bullets like "• A • B • C", split them
+    if (/[•·●▪▸►◦○]/.test(text)) {
+      const parts = text.split(/[•·●▪▸►◦○]/).map(p => p.trim()).filter(p => p.length > 2);
+      result.push(...parts);
+    } else {
+      // Clean leading bullet chars and push as single item
+      const cleaned = text.replace(/^[\s\-–—*]+/, '').trim();
+      if (cleaned.length > 1) result.push(cleaned);
+    }
+  });
+  return result;
 }
 
 // ── CALENDAR URL ──────────────────────────────────────────────────────────────
@@ -518,27 +557,88 @@ function buildCalUrl(s, tz) {
 function addAllToCalendar() {
   const future = SESIONES.filter((s,i) => STATUSES[i] !== 'past' && s.fecha);
   if (!future.length) { alert('No hay sesiones futuras para agendar.'); return; }
-  let opened = 0;
-  future.forEach((s, i) => {
-    const url = buildCalUrl(s, currentTZ);
-    if (url) {
-      setTimeout(() => { window.open(url, '_blank'); }, i * 400);
-      opened++;
-    }
+
+  // Generate .ics file with all sessions
+  const programName = document.getElementById('hero-title').textContent;
+  let ics = 'BEGIN:VCALENDAR\r\nVERSION:2.0\r\nPRODID:-//ADIPA//Planificacion//ES\r\nCALSCALE:GREGORIAN\r\nMETHOD:PUBLISH\r\n';
+
+  future.forEach(s => {
+    const h = getHorario(s, currentTZ);
+    if (!h.inicio || !h.fin || !s.fecha) return;
+    const dateStr = s.fecha.replace(/-/g,'');
+    const startH  = h.inicio.replace(':','') + '00';
+    const endH    = h.fin.replace(':','') + '00';
+    const uid     = `sesion-${s.id || s.numero}@adipa.cl`;
+    const title   = (s.titulo || s.nombre || 'Clase').replace(/,/g,'\\,').replace(/;/g,'\\;');
+    const desc    = `Zoom: ${s.zoom?.url || ''} ID: ${s.zoom?.id || ''}`.replace(/,/g,'\\,');
+    const docentes = (s.docentes||[]).join(', ').replace(/,/g,'\\,');
+
+    ics += 'BEGIN:VEVENT\r\n';
+    ics += `UID:${uid}\r\n`;
+    ics += `DTSTART:${dateStr}T${startH}\r\n`;
+    ics += `DTEND:${dateStr}T${endH}\r\n`;
+    ics += `SUMMARY:${title}\r\n`;
+    ics += `DESCRIPTION:${desc}\\nDocente: ${docentes}\r\n`;
+    ics += `LOCATION:Online vía Zoom\r\n`;
+    ics += `STATUS:CONFIRMED\r\n`;
+    ics += 'END:VEVENT\r\n';
   });
-  if (!opened) alert('No se pudieron generar los eventos. Verifica que las sesiones tengan fecha.');
+
+  ics += 'END:VCALENDAR';
+
+  // Download the .ics file
+  const blob = new Blob([ics], { type: 'text/calendar;charset=utf-8' });
+  const url  = URL.createObjectURL(blob);
+  const a    = document.createElement('a');
+  a.href     = url;
+  a.download = 'planificacion-adipa.ics';
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
 }
 
 // ── PRINT ─────────────────────────────────────────────────────────────────────
 function printSchedule() {
-  // Expande todos los módulos y sesiones antes de imprimir
-  document.querySelectorAll('.module-block').forEach(b => b.classList.remove('collapsed'));
-  document.querySelectorAll('.session-card').forEach(c => c.classList.add('expanded'));
-  window.print();
-  // Restaura después
-  setTimeout(() => {
-    document.querySelectorAll('.session-card').forEach(c => c.classList.remove('expanded'));
-  }, 1000);
+  const programName = document.getElementById('hero-title').textContent;
+  const tz = currentTZ;
+  const tzLabel = TZ_META[tz]?.label || tz;
+
+  let rows = '';
+  SESIONES.forEach((s, i) => {
+    const status = STATUSES[i];
+    const h = getHorario(s, tz);
+    const numLabel = (!s.fecha || s.numero >= 900) ? 'Por definir' : 'Sesión ' + s.numero;
+    const modLabel = s.modulo?.numero ? 'Módulo ' + s.modulo.numero : '—';
+    const dateLabel = s.fecha ? fmtFull(s.fecha) : 'Por definir';
+    const timeLabel = h.inicio && h.fin ? `${h.inicio} – ${h.fin} hrs` : '—';
+    const title = s.titulo || s.nombre || '—';
+    const rowBg = status === 'past' ? 'color:#888' : '';
+    rows += `<tr><td style="${rowBg}">${numLabel}</td><td style="${rowBg}">${modLabel}</td><td style="${rowBg}">${dateLabel}</td><td style="${rowBg}">${timeLabel} (${tzLabel})</td><td style="${rowBg}">${title}</td></tr>`;
+  });
+
+  let wrap = document.getElementById('print-table-wrap');
+  if (!wrap) {
+    wrap = document.createElement('div');
+    wrap.id = 'print-table-wrap';
+    wrap.className = 'print-table-wrap';
+    document.body.appendChild(wrap);
+  }
+  wrap.innerHTML = `
+    <button class="print-close" onclick="closePrint()">×</button>
+    <div class="print-header">
+      <h1>${programName}</h1>
+      <p>Horarios en ${tzLabel} · ADIPA · ${new Date().toLocaleDateString('es-CL')}</p>
+    </div>
+    <table class="print-table">
+      <thead><tr><th>Sesión</th><th>Módulo</th><th>Fecha</th><th>Horario</th><th>Clase</th></tr></thead>
+      <tbody>${rows}</tbody>
+    </table>`;
+  wrap.classList.add('show');
+  setTimeout(() => window.print(), 300);
+}
+function closePrint() {
+  document.getElementById('print-table-wrap')?.classList.remove('show');
 }
 
 // ── CALENDAR VIEW ─────────────────────────────────────────────────────────────
@@ -595,7 +695,7 @@ function renderCalBody() {
       const isToday = iso === todayISO;
       html += `<div class="cal-cell${events.length?' has-session':''}${isToday?' is-today':''}">
         <div class="cal-cell-num">${d}</div>
-        ${events.map(({s,status}) => `<div class="cal-event ev-${status}">S${s.numero} ${s.modulo?.numero ? 'M'+s.modulo.numero : ''}</div>`).join('')}
+        ${events.map(({s,status}) => { const cu = buildCalUrl(s, currentTZ); return `<div class="cal-event ev-${status}" style="cursor:${cu?'pointer':'default'}" title="Sesión ${s.numero}: ${s.titulo||s.nombre}" onclick="${cu?'window.open(\'' + cu + '\',\'_blank\')':''}">Sesión ${s.numero}</div>`; }).join('')}
       </div>`;
     }
     html += '</div></div>';
@@ -610,9 +710,31 @@ function tcColor(name) {
   return tcMap[name];
 }
 function initials(name) {
-  const c = name.replace(/PhD\.\s*\(c\)\.\s*|PhD\.\s*|Mg\.\s*Ps\.\s*|Mg\.\s*|Ps\.\s*|Dr\.\s*/gi,'').trim();
-  const p = c.split(' ').filter(Boolean);
-  return ((p[0]?.[0]||'')+(p[1]?.[0]||'')).toUpperCase();
+  // Strip ALL academic/professional titles before taking initials
+  const cleaned = name
+    .replace(/PhD\.\s*\(c\)\.?\s*/gi,'')
+    .replace(/PhD\.?\s*/gi,'')
+    .replace(/Mg\.\s*Ps\.?\s*/gi,'')
+    .replace(/Mg\.?\s*/gi,'')
+    .replace(/Ps\.?\s*/gi,'')
+    .replace(/Dr\.?\s*/gi,'')
+    .replace(/Dra\.?\s*/gi,'')
+    .replace(/Ing\.?\s*/gi,'')
+    .replace(/Abgda?\.?\s*/gi,'')
+    .replace(/Abg\.?\s*/gi,'')
+    .replace(/Lic\.?\s*/gi,'')
+    .replace(/Per\.?\s*/gi,'')
+    .replace(/CP\.?\s*/gi,'')
+    .replace(/MSc\.?\s*/gi,'')
+    .replace(/Msc\.?\s*/gi,'')
+    .trim();
+  const parts = cleaned.split(/[\s,]+/).filter(Boolean);
+  // Take first letter of first name + first letter of last name (skip particles)
+  const particles = new Set(['de','del','la','las','los','van','von','di','da','do']);
+  const meaningful = parts.filter(p => !particles.has(p.toLowerCase()));
+  const first = meaningful[0]?.[0] || '';
+  const last  = meaningful[1]?.[0] || '';
+  return (first + last).toUpperCase();
 }
 function renderTeacher(name) {
   const n = (name||'').trim();
@@ -622,7 +744,7 @@ function renderTeacher(name) {
 }
 
 // ── RENDER CARD ───────────────────────────────────────────────────────────────
-function renderCard(s, status) {
+function renderCard(s, status, sinFecha=false) {
   const tz    = currentTZ;
   const h     = getHorario(s, tz);
   const diff  = daysUntil(s.fecha);
@@ -673,7 +795,7 @@ function renderCard(s, status) {
   return `<div class="session-card s-${status}" id="card-${s.id}">
     ${nextBanner}
     <div class="session-summary" onclick="toggle('${s.id}')" role="button" aria-expanded="false">
-      <span class="session-num">Sesión ${s.numero}</span>
+      <span class="session-num">${sinFecha || s.numero >= 900 ? 'Por definir' : 'Sesión '+s.numero}</span>
       <span class="status-badge ${sbClass}"><span class="dot"></span>${sbLabel}</span>
       <div class="session-info">
         <div class="session-title-text">${s.titulo||s.nombre}</div>
@@ -716,25 +838,31 @@ function renderCard(s, status) {
 function renderAll() {
   const container = document.getElementById('main-content');
   const mods = {};
+  const sinFecha = [];
+
   SESIONES.forEach((s,i) => {
     const status = STATUSES[i];
-    const m = s.modulo?.numero || 1;
-    const modOk = activeModFilter === 'all' || m === activeModFilter;
+    const modOk = activeModFilter === 'all' || (s.modulo?.numero || 1) === activeModFilter;
     const stOk  = activeStatusFilter === 'all' || status === activeStatusFilter ||
                   (activeStatusFilter === 'future' && status === 'next');
-    if (modOk && stOk) {
-      if (!mods[m]) mods[m] = [];
-      mods[m].push({ s, status });
+    if (!modOk || !stOk) return;
+
+    if (!s.fecha) {
+      sinFecha.push({ s, status: 'future' });
+      return;
     }
+    const m = s.modulo?.numero || 1;
+    if (!mods[m]) mods[m] = [];
+    mods[m].push({ s, status });
   });
 
   const keys = Object.keys(mods).sort((a,b)=>+a-+b);
-  if (!keys.length) {
+  if (!keys.length && !sinFecha.length) {
     container.innerHTML = `<div class="state-screen"><p class="state-title">No hay sesiones para este filtro</p></div>`;
     return;
   }
 
-  container.innerHTML = keys.map(m => {
+  let html = keys.map(m => {
     const items  = mods[m];
     const nombre = items[0]?.s?.modulo?.nombre || `Módulo ${m}`;
     const count  = items.length;
@@ -750,6 +878,23 @@ function renderAll() {
       </div>
     </div>`;
   }).join('');
+
+  // Sección de clases sin fecha al final
+  if (sinFecha.length) {
+    html += `<div class="module-block" id="mod-block-sin-fecha" style="border-color:rgba(184,110,10,.25)">
+      <div class="module-header" onclick="toggleModule('sin-fecha')" style="background:#FFFBEB">
+        <span class="module-tag" style="background:#FEF3C7;color:#92400e">Por definir</span>
+        <span class="module-name-text" style="color:#92400e">Clases por definir</span>
+        <span class="module-count">${sinFecha.length} ${sinFecha.length===1?'sesión':'sesiones'}</span>
+        <svg class="module-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+      </div>
+      <div class="module-body">
+        <div class="module-sessions">${sinFecha.map(({s})=>renderCard(s,'future',true)).join('')}</div>
+      </div>
+    </div>`;
+  }
+
+  container.innerHTML = html;
 }
 
 // ── INTERACTIONS ──────────────────────────────────────────────────────────────

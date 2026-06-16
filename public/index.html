@@ -1,1 +1,660 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Planificación de Clases · ADIPA</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+:root {
+  --purple: #704EFD; --purple-dark: #5A38E6; --purple-glow: rgba(112,78,253,.08);
+  --cyan:   #2CB7FF; --navy: #091E42;
+  --bg: #F5F6FB; --surface: #fff;
+  --border: rgba(9,30,66,.08); --border-med: rgba(9,30,66,.15);
+  --t1: #091E42; --t2: #3D5077; --t3: #7A8AAA;
+  --green: #1D9E75; --amber: #B86E0A;
+  --r-md: 10px; --r-lg: 14px;
+  --shadow: 0 1px 3px rgba(9,30,66,.06);
+}
+body { font-family:'Inter',-apple-system,sans-serif; background:var(--bg); color:var(--t1); font-size:15px; line-height:1.6; -webkit-font-smoothing:antialiased; min-height:100vh; padding-bottom:72px; }
 
+/* ── TOPBAR ── */
+.topbar { background:var(--navy); position:sticky; top:0; z-index:100; padding:0 1.5rem; }
+.topbar-inner { max-width:920px; margin:0 auto; height:56px; display:flex; align-items:center; justify-content:space-between; gap:1rem; }
+.topbar-logo img { height:26px; display:block; filter:brightness(0) invert(1); }
+.topbar-logo span { color:#fff; font-size:17px; font-weight:700; }
+.tz-switcher { display:flex; gap:2px; background:rgba(255,255,255,.08); border-radius:8px; padding:3px; }
+.tz-btn { font-size:11px; font-weight:500; padding:4px 10px; border-radius:5px; border:none; background:transparent; color:rgba(255,255,255,.5); cursor:pointer; transition:all .15s; white-space:nowrap; }
+.tz-btn.active { background:rgba(255,255,255,.15); color:#fff; }
+
+/* ── HERO ── */
+.hero { background:var(--purple); padding:2.5rem 1.5rem 2.25rem; position:relative; overflow:hidden; }
+.hero::after { content:''; position:absolute; right:-100px; top:-100px; width:380px; height:380px; border-radius:50%; background:radial-gradient(circle,rgba(255,255,255,.10) 0%,transparent 65%); pointer-events:none; }
+.hero::before { content:''; position:absolute; left:-60px; bottom:-80px; width:280px; height:280px; border-radius:50%; background:radial-gradient(circle,rgba(9,30,66,.18) 0%,transparent 70%); pointer-events:none; }
+.hero-inner { max-width:920px; margin:0 auto; position:relative; z-index:1; }
+.hero-logo { display:block; height:36px; margin-bottom:1.5rem; filter:brightness(0) invert(1); opacity:.95; }
+.eyebrow { display:inline-flex; align-items:center; gap:6px; font-size:11px; font-weight:600; letter-spacing:.08em; text-transform:uppercase; color:rgba(255,255,255,.65); margin-bottom:.6rem; }
+.hero-title { font-size:24px; font-weight:600; color:#fff; line-height:1.3; margin-bottom:1.25rem; max-width:660px; }
+.hero-meta { display:flex; flex-wrap:wrap; gap:1.25rem; margin-bottom:1.5rem; }
+.meta-item { display:flex; align-items:center; gap:6px; font-size:13px; color:rgba(255,255,255,.75); }
+.meta-item svg { width:14px; height:14px; flex-shrink:0; opacity:.8; }
+.meta-item strong { color:#fff; font-weight:500; }
+.progress-wrap { background:rgba(255,255,255,.12); border:1px solid rgba(255,255,255,.15); border-radius:var(--r-lg); padding:.9rem 1.25rem; display:flex; align-items:center; gap:1rem; max-width:480px; }
+.progress-track { flex:1; height:4px; background:rgba(255,255,255,.2); border-radius:2px; overflow:hidden; }
+.progress-fill { height:100%; border-radius:2px; background:linear-gradient(90deg,#fff,var(--cyan)); transition:width .4s; }
+.progress-count { font-size:12px; font-weight:600; color:#fff; white-space:nowrap; }
+.progress-label { font-size:12px; color:rgba(255,255,255,.6); white-space:nowrap; }
+
+/* ── ESTADOS ── */
+.status-strip { background:#fff; border-bottom:1px solid var(--border); padding:.6rem 1.5rem; }
+.status-strip-inner { max-width:920px; margin:0 auto; display:flex; align-items:center; gap:1.5rem; flex-wrap:wrap; }
+.legend-badge { display:inline-flex; align-items:center; gap:4px; font-size:10px; font-weight:600; padding:2px 7px; border-radius:4px; white-space:nowrap; }
+.badge-past   { background:#EEF0F5; color:#7A8AAA; }
+.badge-next   { background:#EEE9FF; color:var(--purple); border:1px solid rgba(112,78,253,.2); }
+.badge-future { background:#F5F3FF; color:#6d28d9; }
+.strip-hint   { margin-left:auto; font-size:12px; color:var(--t3); }
+
+/* ── FILTROS ── */
+.filters-bar { background:#fff; border-bottom:1px solid var(--border); padding:.7rem 1.5rem; overflow-x:auto; -webkit-overflow-scrolling:touch; }
+.filters-inner { max-width:920px; margin:0 auto; display:flex; gap:5px; align-items:center; min-width:max-content; }
+.filter-label { font-size:12px; color:var(--t3); font-weight:500; margin-right:4px; }
+.chip { font-size:12px; font-weight:500; padding:5px 12px; border-radius:20px; border:1px solid var(--border-med); background:transparent; color:var(--t2); cursor:pointer; transition:all .15s; white-space:nowrap; }
+.chip:hover { border-color:var(--purple); color:var(--purple); }
+.chip.active { background:var(--purple); border-color:var(--purple); color:#fff; }
+
+/* ── MAIN ── */
+.main { max-width:920px; margin:0 auto; padding:1.5rem; }
+
+/* ── MÓDULO ── */
+.module-block { margin-bottom:2rem; }
+.module-header { display:flex; align-items:center; gap:10px; margin-bottom:.75rem; padding:0 .25rem; }
+.module-tag { font-size:10px; font-weight:600; letter-spacing:.06em; text-transform:uppercase; padding:3px 9px; border-radius:4px; white-space:nowrap; flex-shrink:0; }
+.module-name-text { font-size:14px; font-weight:500; color:var(--t1); flex:1; }
+.module-count { font-size:12px; color:var(--t3); }
+
+/* ── SESIÓN CARD ── */
+.session-card { border-radius:var(--r-lg); margin-bottom:8px; overflow:hidden; border:1px solid var(--border); box-shadow:var(--shadow); transition:border-color .15s, box-shadow .15s; }
+.session-card.s-past { background:#F1F3F8; border-color:rgba(9,30,66,.07); box-shadow:none; }
+.session-card.s-past .session-title-text { color:var(--t3); }
+.session-card.s-past .session-subtitle   { color:#aab4c8; }
+.session-card.s-past .session-num        { color:#aab4c8; background:rgba(9,30,66,.04); }
+.session-card.s-past .date-main          { color:var(--t3); }
+.session-card.s-past .date-time          { color:#aab4c8; }
+.session-card.s-past:hover               { border-color:rgba(9,30,66,.12); }
+.session-card.s-next { background:#FDFCFF; border:2px solid var(--purple); box-shadow:0 0 0 4px var(--purple-glow), 0 2px 14px rgba(112,78,253,.14); }
+.session-card.s-next:hover { box-shadow:0 0 0 5px var(--purple-glow), 0 4px 18px rgba(112,78,253,.18); }
+.session-card.s-future { background:var(--surface); }
+.session-card.s-future:hover { border-color:var(--border-med); box-shadow:0 2px 8px rgba(9,30,66,.07); }
+.session-card.expanded { border-color:var(--purple) !important; box-shadow:0 0 0 3px var(--purple-glow) !important; }
+
+.next-banner { display:flex; align-items:center; gap:8px; padding:8px 1.25rem; background:var(--purple); font-size:11px; font-weight:600; color:#fff; letter-spacing:.04em; text-transform:uppercase; }
+.next-banner-dot { width:6px; height:6px; border-radius:50%; background:#fff; opacity:.9; flex-shrink:0; animation:pulse 1.8s ease-in-out infinite; }
+@keyframes pulse { 0%,100%{opacity:.9;transform:scale(1)} 50%{opacity:.4;transform:scale(.7)} }
+.next-banner-countdown { margin-left:auto; font-size:11px; font-weight:500; color:rgba(255,255,255,.8); text-transform:none; letter-spacing:0; }
+
+.session-summary { padding:1rem 1.25rem; cursor:pointer; display:grid; grid-template-columns:auto auto 1fr auto; align-items:center; gap:12px; }
+.session-num { font-size:11px; font-weight:600; color:var(--t3); background:var(--bg); border-radius:5px; padding:4px 8px; white-space:nowrap; min-width:68px; text-align:center; }
+.status-badge { display:inline-flex; align-items:center; gap:4px; font-size:10px; font-weight:700; padding:3px 8px; border-radius:4px; white-space:nowrap; flex-shrink:0; }
+.status-badge .dot { width:5px; height:5px; border-radius:50%; flex-shrink:0; }
+.sb-past   { background:#E8EAF0; color:#8A94AD; } .sb-past .dot   { background:#B0B8CE; }
+.sb-next   { background:#EEE9FF; color:var(--purple); } .sb-next .dot   { background:var(--purple); }
+.sb-future { background:#EEE9FF; color:var(--purple); opacity:.6; } .sb-future .dot { background:var(--purple); opacity:.5; }
+.session-info { min-width:0; }
+.session-title-text { font-size:14px; font-weight:500; color:var(--t1); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+.session-subtitle { font-size:12px; color:var(--t2); margin-top:1px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+.session-meta-right { display:flex; align-items:center; gap:12px; flex-shrink:0; }
+.date-badge { text-align:right; }
+.date-main { font-size:13px; font-weight:500; color:var(--t1); }
+.date-time  { font-size:11px; color:var(--t2); }
+.eval-pill  { font-size:10px; font-weight:600; padding:3px 7px; border-radius:4px; background:#FDF3E3; color:var(--amber); white-space:nowrap; }
+.chevron-icon { width:16px; height:16px; color:var(--t3); transition:transform .2s; flex-shrink:0; }
+.session-card.expanded .chevron-icon { transform:rotate(180deg); }
+
+/* ── DETALLE ── */
+.session-detail { display:none; padding:0 1.25rem 1.25rem; border-top:1px solid var(--border); }
+.session-card.expanded .session-detail { display:block; }
+.detail-section { padding-top:1rem; }
+.detail-grid { display:grid; grid-template-columns:1fr 1fr; gap:1rem; margin-bottom:1rem; }
+.detail-block-title { font-size:10px; font-weight:600; letter-spacing:.07em; text-transform:uppercase; color:var(--t3); margin-bottom:8px; }
+.teacher-row { display:flex; flex-wrap:wrap; gap:6px; }
+.teacher-chip { display:inline-flex; align-items:center; gap:7px; background:var(--bg); border:1px solid var(--border); border-radius:20px; padding:4px 10px 4px 4px; }
+.teacher-avatar { width:26px; height:26px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:9px; font-weight:700; flex-shrink:0; }
+.teacher-name-text { font-size:12px; color:var(--t1); font-weight:500; }
+.content-list { list-style:none; display:flex; flex-direction:column; gap:5px; }
+.content-list li { font-size:13px; color:var(--t2); padding-left:16px; position:relative; line-height:1.5; }
+.content-list li::before { content:''; width:5px; height:5px; border-radius:50%; background:var(--purple); opacity:.35; position:absolute; left:2px; top:8px; }
+.eval-info-row { display:flex; align-items:center; gap:8px; padding:9px 12px; background:#FDF3E3; border-radius:6px; margin-top:1rem; font-size:12px; color:var(--amber); border:1px solid rgba(184,110,10,.15); }
+.eval-info-row svg { width:14px; height:14px; flex-shrink:0; }
+.action-row { display:flex; gap:8px; margin-top:1rem; flex-wrap:wrap; }
+.action-btn { display:inline-flex; align-items:center; gap:6px; font-size:12px; font-weight:500; padding:7px 14px; border-radius:6px; border:1px solid var(--border-med); background:#fff; color:var(--t2); cursor:pointer; text-decoration:none; transition:all .15s; white-space:nowrap; }
+.action-btn:hover { border-color:var(--purple); color:var(--purple); background:#EEE9FF; }
+.action-btn svg { width:14px; height:14px; flex-shrink:0; }
+.action-btn.primary { background:var(--purple); border-color:var(--purple); color:#fff; }
+.action-btn.primary:hover { background:var(--purple-dark); border-color:var(--purple-dark); }
+
+/* ── LOADING / ERROR ── */
+.state-screen { display:flex; flex-direction:column; align-items:center; justify-content:center; min-height:40vh; gap:1rem; padding:2rem; text-align:center; }
+.spinner { width:36px; height:36px; border:3px solid var(--border); border-top-color:var(--purple); border-radius:50%; animation:spin .8s linear infinite; }
+@keyframes spin { to { transform:rotate(360deg); } }
+.state-title { font-size:16px; font-weight:500; color:var(--t1); }
+.state-sub   { font-size:13px; color:var(--t2); max-width:400px; }
+.error-icon  { font-size:32px; }
+
+/* ── TOAST TZ ── */
+.tz-toast { position:fixed; bottom:5.5rem; left:50%; transform:translateX(-50%) translateY(80px); background:var(--navy); color:#fff; font-size:13px; font-weight:500; padding:10px 18px; border-radius:24px; box-shadow:0 4px 20px rgba(9,30,66,.25); display:flex; align-items:center; gap:8px; z-index:200; transition:transform .4s cubic-bezier(.34,1.56,.64,1); white-space:nowrap; }
+.tz-toast.show { transform:translateX(-50%) translateY(0); }
+.tz-dot { width:8px; height:8px; border-radius:50%; background:var(--cyan); flex-shrink:0; }
+
+/* ── WA BAR ── */
+.wa-bar { position:fixed; bottom:0; left:0; right:0; z-index:150; background:var(--navy); border-top:1px solid rgba(255,255,255,.07); padding:.75rem 1.5rem; }
+.wa-bar-inner { max-width:920px; margin:0 auto; display:flex; align-items:center; justify-content:space-between; gap:1rem; }
+.wa-bar-text { font-size:13px; color:rgba(255,255,255,.55); display:flex; align-items:center; gap:8px; }
+.wa-bar-text strong { color:rgba(255,255,255,.85); font-weight:500; }
+.wa-btn { display:inline-flex; align-items:center; gap:8px; background:#25D366; color:#fff; font-size:13px; font-weight:600; padding:9px 18px; border-radius:24px; text-decoration:none; white-space:nowrap; transition:background .15s, transform .1s; flex-shrink:0; }
+.wa-btn:hover { background:#1ebe5c; transform:translateY(-1px); }
+.wa-btn svg { width:18px; height:18px; flex-shrink:0; }
+
+/* ── FOOTER ── */
+.footer { text-align:center; padding:1.5rem; font-size:12px; color:var(--t3); border-top:1px solid var(--border); display:flex; flex-direction:column; align-items:center; gap:.5rem; }
+.footer img { height:18px; opacity:.3; filter:saturate(0); }
+
+/* ── MOBILE ── */
+@media (max-width:640px) {
+  .hero-title { font-size:19px; }
+  .session-summary { grid-template-columns:auto auto 1fr; }
+  .session-meta-right { display:none; }
+  .detail-grid { grid-template-columns:1fr; }
+  .strip-hint { display:none; }
+  .wa-bar-text { display:none; }
+}
+
+html { scroll-behavior:smooth; }
+</style>
+</head>
+<body>
+
+<!-- TOPBAR -->
+<header class="topbar">
+  <div class="topbar-inner">
+    <a href="https://adipa.cl" target="_blank" rel="noopener" style="text-decoration:none">
+      <img src="https://adipa.cl/content/uploads/2022/10/logo-adipa.svg" alt="ADIPA"
+           style="height:26px;display:block;filter:brightness(0) invert(1)"
+           onerror="this.style.display='none';document.getElementById('logo-fb').style.display='block'">
+      <span id="logo-fb" style="display:none;color:#fff;font-size:17px;font-weight:700">ADIPA</span>
+    </a>
+    <div style="display:flex;align-items:center;gap:10px">
+      <span id="tz-label" style="font-size:11px;color:rgba(255,255,255,.35);white-space:nowrap"></span>
+      <div class="tz-switcher">
+        <button class="tz-btn" id="btn-CL" onclick="setTZ('CL',this)">🇨🇱 Chile</button>
+        <button class="tz-btn" id="btn-MX" onclick="setTZ('MX',this)">🇲🇽 México</button>
+        <button class="tz-btn" id="btn-CO" onclick="setTZ('CO',this)">🇨🇴 Colombia</button>
+      </div>
+    </div>
+  </div>
+</header>
+
+<!-- HERO (se rellena con JS) -->
+<section class="hero">
+  <div class="hero-inner">
+    <img class="hero-logo"
+         src="https://adipa.cl/content/uploads/2022/10/logo-adipa.svg"
+         alt="ADIPA Global" onerror="this.style.display='none'">
+    <p class="eyebrow">
+      <svg width="5" height="5" style="margin-right:4px"><circle cx="2.5" cy="2.5" r="2.5" fill="currentColor"/></svg>
+      Programa académico · <span id="hero-year"></span>
+    </p>
+    <h1 class="hero-title" id="hero-title">Cargando programa…</h1>
+    <div class="hero-meta">
+      <span class="meta-item">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+        <span id="hero-dates">—</span>
+      </span>
+      <span class="meta-item">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+        <span id="hero-tz-label">—</span>
+      </span>
+      <span class="meta-item">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 10l4.553-2.069A1 1 0 0121 8.82v6.36a1 1 0 01-1.447.889L15 14M3 8a2 2 0 012-2h8a2 2 0 012 2v8a2 2 0 01-2 2H5a2 2 0 01-2-2V8z"/></svg>
+        Online vía Zoom
+      </span>
+      <span class="meta-item">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19.5A2.5 2.5 0 016.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 014 19.5v-15A2.5 2.5 0 016.5 2z"/></svg>
+        <strong id="hero-modules">—</strong>
+      </span>
+    </div>
+    <div class="progress-wrap">
+      <span class="progress-count" id="prog-count">0/0</span>
+      <div class="progress-track"><div class="progress-fill" id="prog-fill" style="width:0%"></div></div>
+      <span class="progress-label">sesiones completadas</span>
+    </div>
+  </div>
+</section>
+
+<!-- STATUS LEGEND -->
+<div class="status-strip">
+  <div class="status-strip-inner">
+    <span class="legend-badge badge-past">
+      <svg width="8" height="8" viewBox="0 0 8 8"><circle cx="4" cy="4" r="3" fill="#B0B8CE"/></svg>
+      Realizada
+    </span>
+    <span class="legend-badge badge-next">
+      <svg width="8" height="8" viewBox="0 0 8 8"><circle cx="4" cy="4" r="3" fill="#704EFD"/></svg>
+      Próxima sesión
+    </span>
+    <span class="legend-badge badge-future">
+      <svg width="8" height="8" viewBox="0 0 8 8"><circle cx="4" cy="4" r="3" fill="#704EFD" opacity=".4"/></svg>
+      Próximamente
+    </span>
+    <span class="strip-hint">Haz clic en una sesión para ver el detalle</span>
+  </div>
+</div>
+
+<!-- FILTROS (se rellena dinámicamente) -->
+<div class="filters-bar">
+  <div class="filters-inner" id="filters-inner">
+    <span class="filter-label">Módulo:</span>
+    <button class="chip active" onclick="filterMod('all',this)">Todos</button>
+  </div>
+</div>
+
+<!-- CONTENIDO PRINCIPAL -->
+<main class="main" id="main-content">
+  <div class="state-screen" id="loading-screen">
+    <div class="spinner"></div>
+    <p class="state-title">Cargando planificación…</p>
+    <p class="state-sub">Consultando Monday.com</p>
+  </div>
+</main>
+
+<!-- FOOTER -->
+<footer class="footer">
+  <img src="https://adipa.cl/content/uploads/2022/10/logo-adipa.svg" alt="ADIPA">
+  <span>ADIPA Global · Planificación de clases</span>
+</footer>
+
+<!-- WA BAR -->
+<div class="wa-bar">
+  <div class="wa-bar-inner">
+    <p class="wa-bar-text">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="opacity:.5"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>
+      ¿Tienes dudas? <strong>Escríbenos por WhatsApp</strong>
+    </p>
+    <a class="wa-btn" id="wa-link" href="#" target="_blank" rel="noopener">
+      <svg viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/><path d="M12 0C5.373 0 0 5.373 0 12c0 2.127.558 4.122 1.532 5.859L.057 23.215a.75.75 0 00.919.919l5.356-1.475A11.943 11.943 0 0012 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 21.75a9.716 9.716 0 01-4.964-1.359l-.355-.212-3.683 1.014 1.014-3.683-.212-.355A9.716 9.716 0 012.25 12C2.25 6.615 6.615 2.25 12 2.25S21.75 6.615 21.75 12 17.385 21.75 12 21.75z"/></svg>
+      Contactar soporte
+    </a>
+  </div>
+</div>
+
+<!-- TZ TOAST -->
+<div class="tz-toast" id="tz-toast">
+  <span class="tz-dot"></span>
+  <span id="tz-toast-msg">Horario ajustado</span>
+</div>
+
+<script>
+'use strict';
+
+// ── CONFIGURACIÓN ──────────────────────────────────────────────────────────────
+// La URL base de tu API en Vercel. En desarrollo usa localhost:3000.
+// En producción Vercel inyecta window.location.origin automáticamente.
+const API_BASE = window.location.origin;
+
+const WA = {
+  CL: 'https://api.whatsapp.com/send?phone=+56957253424&text=Hola,%20me%20quiero%20contactar%20desde%20ADIPA',
+  MX: 'https://api.whatsapp.com/send?phone=+5216221458968&text=Hola,%20me%20quiero%20contactar%20desde%20ADIPA',
+  CO: 'https://api.whatsapp.com/send?phone=+573144718655&text=Hola,%20me%20quiero%20contactar%20desde%20ADIPA'
+};
+
+const TZ = {
+  CL: { label:'Chile',    flag:'🇨🇱' },
+  MX: { label:'México',   flag:'🇲🇽' },
+  CO: { label:'Colombia', flag:'🇨🇴' }
+};
+
+const TZ_IANA = {
+  'America/Santiago':'CL','America/Punta_Arenas':'CL',
+  'America/Mexico_City':'MX','America/Monterrey':'MX','America/Merida':'MX',
+  'America/Tijuana':'MX','America/Chihuahua':'MX','America/Hermosillo':'MX',
+  'America/Cancun':'MX','America/Matamoros':'MX','America/Mazatlan':'MX',
+  'America/Bahia_Banderas':'MX','America/Ojinaga':'MX',
+  'America/Bogota':'CO'
+};
+
+const MOD_STYLES = [
+  ['#EEE9FF','#4c29c9'],['#DBF5FF','#0369a1'],['#DFD5FF','#3730a3'],
+  ['#DBF5FF','#0369a1'],['#EEE9FF','#5b21b6'],['#EEE9FF','#6d28d9'],
+  ['#CBE8FF','#075985'],['#DFD5FF','#4c1d95'],['#DBF5FF','#0c4a6e'],['#EEE9FF','#3730a3']
+];
+const AVATAR_P = [
+  ['#EEE9FF','#4c29c9'],['#DBF5FF','#075985'],['#DFD5FF','#3730a3'],
+  ['#FEF3C7','#92400e'],['#D1FAE5','#065f46'],['#FCE7F3','#831843']
+];
+
+let currentTZ  = 'CL';
+let activeFilter = 'all';
+let SESIONES   = [];
+let STATUSES   = [];
+let tcMap = {}; let tcIdx = 0;
+
+// ── DETECCIÓN TZ ──────────────────────────────────────────────────────────────
+function detectTZ() {
+  try { return TZ_IANA[Intl.DateTimeFormat().resolvedOptions().timeZone] || 'CL'; }
+  catch { return 'CL'; }
+}
+
+// ── FETCH MONDAY ──────────────────────────────────────────────────────────────
+async function loadPrograma() {
+  // Lee ?id= de la URL. Si no hay, usa el board de trauma por defecto.
+  const params  = new URLSearchParams(window.location.search);
+  const boardId = params.get('id') || '18396859731';
+
+  try {
+    const res  = await fetch(`${API_BASE}/api/programa?id=${boardId}`);
+    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+    const data = await res.json();
+    if (data.error) throw new Error(data.error);
+    return data;
+  } catch (err) {
+    showError(err.message);
+    return null;
+  }
+}
+
+// ── STATUS DINÁMICO ──────────────────────────────────────────────────────────
+function computeStatuses(sesiones) {
+  const today = new Date(); today.setHours(0,0,0,0);
+  let nextIdx = -1;
+  for (let i = 0; i < sesiones.length; i++) {
+    const d = sesiones[i].fecha ? new Date(sesiones[i].fecha + 'T12:00:00') : null;
+    if (d && d >= today) { nextIdx = i; break; }
+  }
+  return sesiones.map((s, i) => {
+    const d = s.fecha ? new Date(s.fecha + 'T12:00:00') : null;
+    if (!d) return 'future';
+    if (d < today) return 'past';
+    if (i === nextIdx) return 'next';
+    return 'future';
+  });
+}
+
+// ── HELPERS FECHA ─────────────────────────────────────────────────────────────
+function fmtDate(iso) {
+  if (!iso) return '—';
+  const d = new Date(iso + 'T12:00:00');
+  const days   = ['dom','lun','mar','mié','jue','vie','sáb'];
+  const months = ['ene','feb','mar','abr','may','jun','jul','ago','sep','oct','nov','dic'];
+  return `${days[d.getDay()]} ${d.getDate()} ${months[d.getMonth()]}`;
+}
+function fmtYear(iso) { return iso ? iso.split('-')[0] : new Date().getFullYear(); }
+function daysUntil(iso) {
+  if (!iso) return null;
+  const today = new Date(); today.setHours(0,0,0,0);
+  return Math.round((new Date(iso+'T12:00:00') - today) / 86400000);
+}
+function countdown(diff) {
+  if (diff === null) return '';
+  if (diff === 0) return 'Es hoy';
+  if (diff === 1) return 'Mañana';
+  if (diff > 0)  return `En ${diff} días`;
+  return '';
+}
+
+// ── TEACHERS ─────────────────────────────────────────────────────────────────
+function tcColor(name) {
+  if (!tcMap[name]) tcMap[name] = AVATAR_P[tcIdx++ % AVATAR_P.length];
+  return tcMap[name];
+}
+function initials(name) {
+  const c = name.replace(/PhD\.\s*\(c\)\.\s*|PhD\.\s*|Mg\.\s*Ps\.\s*|Mg\.\s*|Ps\.\s*|Dr\.\s*/gi,'').trim();
+  const p = c.split(' ').filter(Boolean);
+  return ((p[0]?.[0]||'')+(p[1]?.[0]||'')).toUpperCase();
+}
+function renderTeacher(name) {
+  const [bg,txt] = tcColor(name);
+  return `<span class="teacher-chip">
+    <span class="teacher-avatar" style="background:${bg};color:${txt}">${initials(name)}</span>
+    <span class="teacher-name-text">${name}</span>
+  </span>`;
+}
+
+// ── RENDER CARD ───────────────────────────────────────────────────────────────
+function renderCard(s, status) {
+  const tz    = currentTZ;
+  const h     = s.horarios?.[tz] || { inicio:'—', fin:'—' };
+  const diff  = daysUntil(s.fecha);
+
+  const sbClass = status === 'past' ? 'sb-past' : status === 'next' ? 'sb-next' : 'sb-future';
+  const sbLabel = status === 'past' ? 'Realizada' : status === 'next' ? 'Próxima' : 'Próximamente';
+
+  const evalPill = s.evaluacion?.aplica ? '<span class="eval-pill">Evaluación</span>' : '';
+  const evalInfo = s.evaluacion?.aplica && (s.evaluacion.apertura || s.evaluacion.cierre) ? `
+    <div class="eval-info-row">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2"/><rect x="9" y="3" width="6" height="4" rx="1"/></svg>
+      Evaluación disponible: <strong>${fmtDate(s.evaluacion.apertura)}</strong> → cierre: <strong>${fmtDate(s.evaluacion.cierre)}</strong>
+    </div>` : '';
+
+  const nextBanner = status === 'next' ? `
+    <div class="next-banner">
+      <span class="next-banner-dot"></span>
+      Próxima sesión
+      <span class="next-banner-countdown">${countdown(diff)}</span>
+    </div>` : '';
+
+  const docentesHtml = (s.docentes || []).length
+    ? s.docentes.map(renderTeacher).join('')
+    : '<span style="font-size:13px;color:var(--t3)">Por confirmar</span>';
+
+  const contenidosHtml = (s.contenidos || []).length
+    ? s.contenidos.map(c => `<li>${c}</li>`).join('')
+    : '<li>Contenido por confirmar</li>';
+
+  const zoomUrl = s.zoom?.url || '#';
+  const zoomId  = s.zoom?.id  || '';
+
+  return `<div class="session-card s-${status}" id="card-${s.id}">
+    ${nextBanner}
+    <div class="session-summary" onclick="toggle('${s.id}')" role="button" aria-expanded="false">
+      <span class="session-num">Sesión ${s.numero}</span>
+      <span class="status-badge ${sbClass}"><span class="dot"></span>${sbLabel}</span>
+      <div class="session-info">
+        <div class="session-title-text">${s.titulo || s.nombre}</div>
+        <div class="session-subtitle">${(s.docentes||[]).join(' · ') || 'Docente por confirmar'}</div>
+      </div>
+      <div class="session-meta-right">
+        <div class="date-badge">
+          <div class="date-main">${fmtDate(s.fecha)}</div>
+          <div class="date-time">${h.inicio}–${h.fin} hrs</div>
+        </div>
+        ${evalPill}
+        <svg class="chevron-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+      </div>
+    </div>
+    <div class="session-detail" id="detail-${s.id}">
+      <div class="detail-section">
+        <div class="detail-grid">
+          <div>
+            <p class="detail-block-title">Docente</p>
+            <div class="teacher-row">${docentesHtml}</div>
+          </div>
+          <div>
+            <p class="detail-block-title">Fecha y horario (${TZ[tz]?.label || tz})</p>
+            <p style="font-size:13px;font-weight:500;color:var(--t1)">${fmtDate(s.fecha)}</p>
+            <p style="font-size:13px;color:var(--t2)">${h.inicio} – ${h.fin} hrs</p>
+          </div>
+        </div>
+        <div style="margin-bottom:1rem">
+          <p class="detail-block-title">Contenidos de la sesión</p>
+          <ul class="content-list">${contenidosHtml}</ul>
+        </div>
+        ${evalInfo}
+        <div class="action-row">
+          ${zoomUrl !== '#' ? `<a class="action-btn primary" href="${zoomUrl}" target="_blank" rel="noopener">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 10l4.553-2.069A1 1 0 0121 8.82v6.36a1 1 0 01-1.447.889L15 14M3 8a2 2 0 012-2h8a2 2 0 012 2v8a2 2 0 01-2 2H5a2 2 0 01-2-2V8z"/></svg>
+            Unirse a Zoom
+          </a>` : ''}
+          ${zoomId ? `<button class="action-btn" onclick="copyId('${zoomId}', this)">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>
+            <span>Copiar ID: ${zoomId}</span>
+          </button>` : ''}
+        </div>
+      </div>
+    </div>
+  </div>`;
+}
+
+// ── RENDER MÓDULOS ────────────────────────────────────────────────────────────
+function renderAll(modFilter) {
+  const mods = {};
+  SESIONES.forEach((s, i) => {
+    const m = s.modulo?.numero || 1;
+    if (modFilter === 'all' || m === modFilter) {
+      if (!mods[m]) mods[m] = [];
+      mods[m].push({ s, status: STATUSES[i] });
+    }
+  });
+
+  const html = Object.keys(mods).sort((a,b)=>+a-+b).map(m => {
+    const items = mods[m];
+    const nombre= items[0]?.s?.modulo?.nombre || `Módulo ${m}`;
+    const idx   = Math.min(+m - 1, MOD_STYLES.length - 1);
+    const [bg,txt] = MOD_STYLES[idx] || MOD_STYLES[0];
+    return `<div class="module-block" data-mod="${m}">
+      <div class="module-header">
+        <span class="module-tag" style="background:${bg};color:${txt}">Módulo ${m}</span>
+        <span class="module-name-text">${nombre}</span>
+        <span class="module-count">${items.length} ses.</span>
+      </div>
+      ${items.map(({s,status}) => renderCard(s, status)).join('')}
+    </div>`;
+  }).join('');
+
+  document.getElementById('main-content').innerHTML = html || '<div class="state-screen"><p class="state-title">No hay sesiones para este módulo</p></div>';
+}
+
+// ── INTERACCIONES ─────────────────────────────────────────────────────────────
+function toggle(id) {
+  const card = document.getElementById('card-' + id);
+  const exp  = card.classList.toggle('expanded');
+  card.querySelector('.session-summary').setAttribute('aria-expanded', exp);
+  if (exp) card.scrollIntoView({ behavior:'smooth', block:'nearest' });
+}
+
+function filterMod(mod, btn) {
+  activeFilter = mod;
+  document.querySelectorAll('.chip').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  renderAll(mod);
+}
+
+function setTZ(code, btn) {
+  currentTZ = code;
+  document.querySelectorAll('.tz-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('btn-' + code).classList.add('active');
+  const cfg = TZ[code];
+  document.getElementById('tz-label').textContent = cfg.flag + ' ' + cfg.label;
+  document.getElementById('wa-link').href = WA[code] || WA['CL'];
+  updateHeroTZ();
+  renderAll(activeFilter);
+}
+
+function updateHeroTZ() {
+  const h = SESIONES[0]?.horarios?.[currentTZ];
+  if (h) {
+    document.getElementById('hero-tz-label').textContent =
+      `${h.inicio} – ${h.fin} hrs (${TZ[currentTZ]?.label})`;
+  }
+}
+
+function copyId(id, btn) {
+  navigator.clipboard?.writeText(id).then(() => {
+    const sp = btn.querySelector('span');
+    sp.textContent = '¡Copiado!';
+    setTimeout(() => { sp.textContent = `Copiar ID: ${id}`; }, 2000);
+  }).catch(() => {});
+}
+
+// ── RELLENA HERO ─────────────────────────────────────────────────────────────
+function fillHero(data) {
+  document.getElementById('hero-title').textContent = data.programa || 'Programa ADIPA';
+  document.title = (data.programa || 'Programa') + ' · ADIPA';
+
+  const fechas = SESIONES.map(s => s.fecha).filter(Boolean).sort();
+  const inicio = fechas[0]; const fin = fechas[fechas.length - 1];
+  if (inicio && fin) {
+    document.getElementById('hero-year').textContent = fmtYear(inicio);
+    document.getElementById('hero-dates').innerHTML =
+      `<strong>${fmtDate(inicio)}</strong> – <strong>${fmtDate(fin)}</strong>`;
+  }
+
+  const mods = [...new Set(SESIONES.map(s => s.modulo?.numero))];
+  document.getElementById('hero-modules').textContent =
+    `${mods.length} módulo${mods.length !== 1 ? 's' : ''} · ${data.totalSesiones} sesiones`;
+
+  const past = STATUSES.filter(s => s === 'past').length;
+  document.getElementById('prog-count').textContent = `${past}/${data.totalSesiones}`;
+  document.getElementById('prog-fill').style.width  = `${(past / data.totalSesiones) * 100}%`;
+
+  updateHeroTZ();
+}
+
+// ── FILTROS DINÁMICOS ─────────────────────────────────────────────────────────
+function buildFilters() {
+  const mods = [...new Set(SESIONES.map(s => s.modulo?.numero))].sort((a,b) => a-b);
+  const fi   = document.getElementById('filters-inner');
+  fi.innerHTML = `<span class="filter-label">Módulo:</span>
+    <button class="chip active" onclick="filterMod('all',this)">Todos</button>
+    ${mods.map(m => `<button class="chip" onclick="filterMod(${m},this)">${m}</button>`).join('')}`;
+}
+
+// ── ERROR ─────────────────────────────────────────────────────────────────────
+function showError(msg) {
+  document.getElementById('main-content').innerHTML = `
+    <div class="state-screen">
+      <div class="error-icon">⚠️</div>
+      <p class="state-title">No se pudo cargar la planificación</p>
+      <p class="state-sub">${msg}</p>
+      <p class="state-sub" style="margin-top:.5rem;font-size:12px;color:var(--t3)">
+        Verifica que el board_id en la URL sea correcto y que el token de Monday esté configurado en Vercel.
+      </p>
+    </div>`;
+}
+
+// ── INIT ──────────────────────────────────────────────────────────────────────
+(async () => {
+  // TZ
+  const tz = detectTZ();
+  currentTZ = tz;
+  document.getElementById('btn-' + tz)?.classList.add('active');
+  document.getElementById('tz-label').textContent = TZ[tz]?.flag + ' ' + TZ[tz]?.label;
+  document.getElementById('wa-link').href = WA[tz] || WA['CL'];
+
+  // Toast TZ
+  const toast = document.getElementById('tz-toast');
+  document.getElementById('tz-toast-msg').textContent =
+    TZ[tz]?.flag + '  Horario ajustado a ' + TZ[tz]?.label;
+  toast.classList.add('show');
+  setTimeout(() => toast.classList.remove('show'), 3500);
+
+  // Cargar datos desde Monday vía API
+  const data = await loadPrograma();
+  if (!data) return;
+
+  SESIONES  = data.sesiones || [];
+  STATUSES  = computeStatuses(SESIONES);
+
+  fillHero(data);
+  buildFilters();
+  renderAll('all');
+
+  // Scroll a la sesión próxima
+  setTimeout(() => {
+    const next = document.querySelector('.s-next');
+    if (next) next.scrollIntoView({ behavior:'smooth', block:'center' });
+  }, 400);
+})();
+</script>
+</body>
+</html>

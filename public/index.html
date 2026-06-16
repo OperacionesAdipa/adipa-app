@@ -115,7 +115,7 @@ body { font-family:'Inter',-apple-system,sans-serif; background:var(--bg); color
 .session-num { font-size:10px; font-weight:700; color:#fff; background:var(--navy); border-radius:5px; padding:4px 8px; white-space:nowrap; min-width:64px; text-align:center; letter-spacing:.02em; }
 .s-past .session-num { background:#8A94AD; }
 .s-next .session-num { background:var(--purple); }
-.s-future .session-num { background:#B86E0A; }
+.s-future .session-num { background:var(--purple); }
 
 /* STATUS BADGE */
 .status-badge { display:inline-flex; align-items:center; gap:4px; font-size:10px; font-weight:700; padding:3px 8px; border-radius:4px; white-space:nowrap; flex-shrink:0; letter-spacing:.01em; }
@@ -559,8 +559,16 @@ function addAllToCalendar() {
   if (!future.length) { alert('No hay sesiones futuras para agendar.'); return; }
 
   // Generate .ics file with all sessions
-  const programName = document.getElementById('hero-title').textContent;
-  let ics = 'BEGIN:VCALENDAR\r\nVERSION:2.0\r\nPRODID:-//ADIPA//Planificacion//ES\r\nCALSCALE:GREGORIAN\r\nMETHOD:PUBLISH\r\n';
+  const programName = (document.getElementById('hero-title').textContent || 'Programa ADIPA').trim();
+  const tzIana = TZ_ZONES[currentTZ] || 'America/Santiago';
+
+  let ics = 'BEGIN:VCALENDAR\r\n';
+  ics += 'VERSION:2.0\r\n';
+  ics += 'PRODID:-//ADIPA//Planificacion//ES\r\n';
+  ics += 'CALSCALE:GREGORIAN\r\n';
+  ics += 'METHOD:PUBLISH\r\n';
+  ics += `X-WR-CALNAME:${programName}\r\n`;
+  ics += `X-WR-TIMEZONE:${tzIana}\r\n`;
 
   future.forEach(s => {
     const h = getHorario(s, currentTZ);
@@ -568,17 +576,22 @@ function addAllToCalendar() {
     const dateStr = s.fecha.replace(/-/g,'');
     const startH  = h.inicio.replace(':','') + '00';
     const endH    = h.fin.replace(':','') + '00';
-    const uid     = `sesion-${s.id || s.numero}@adipa.cl`;
-    const title   = (s.titulo || s.nombre || 'Clase').replace(/,/g,'\\,').replace(/;/g,'\\;');
-    const desc    = `Zoom: ${s.zoom?.url || ''} ID: ${s.zoom?.id || ''}`.replace(/,/g,'\\,');
-    const docentes = (s.docentes||[]).join(', ').replace(/,/g,'\\,');
+    const uid     = `sesion-${s.id || s.numero}-${currentTZ.toLowerCase()}@adipa.cl`;
+    // Escape special chars for iCal
+    const esc = t => (t||''). replace(/\\/g,'\\\\'). replace(/,/g,'\\,'). replace(/;/g,'\\;');
+    const title   = esc(s.titulo || s.nombre || 'Clase');
+    const zoomUrl = s.zoom?.url || '';
+    const zoomId  = s.zoom?.id  || '';
+    const docentes = (s.docentes||[]).join(', ');
+    const desc    = esc(`Docente: ${docentes}\nZoom: ${zoomUrl}\nID: ${zoomId}`);
+    const sesLabel = s.numero < 900 ? `Sesión ${s.numero} - ` : '';
 
     ics += 'BEGIN:VEVENT\r\n';
     ics += `UID:${uid}\r\n`;
-    ics += `DTSTART:${dateStr}T${startH}\r\n`;
-    ics += `DTEND:${dateStr}T${endH}\r\n`;
-    ics += `SUMMARY:${title}\r\n`;
-    ics += `DESCRIPTION:${desc}\\nDocente: ${docentes}\r\n`;
+    ics += `DTSTART;TZID=${tzIana}:${dateStr}T${startH}\r\n`;
+    ics += `DTEND;TZID=${tzIana}:${dateStr}T${endH}\r\n`;
+    ics += `SUMMARY:${sesLabel}${title}\r\n`;
+    ics += `DESCRIPTION:${desc}\r\n`;
     ics += `LOCATION:Online vía Zoom\r\n`;
     ics += `STATUS:CONFIRMED\r\n`;
     ics += 'END:VEVENT\r\n';
@@ -591,7 +604,7 @@ function addAllToCalendar() {
   const url  = URL.createObjectURL(blob);
   const a    = document.createElement('a');
   a.href     = url;
-  a.download = 'planificacion-adipa.ics';
+  a.download = (programName.toLowerCase().replace(/[^a-z0-9]+/g,'-').substring(0,40) || 'planificacion-adipa') + '.ics';
   document.body.appendChild(a);
   a.click();
   document.body.removeChild(a);

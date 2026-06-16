@@ -734,10 +734,12 @@ function tcColor(name) {
   return tcMap[name];
 }
 function initials(name) {
-  // Strip ALL academic/professional titles before taking initials
+  // Strip ALL academic/professional titles and abbreviations before taking initials
   const cleaned = name
-    .replace(/PhD\.\s*\(c\)\.?\s*/gi,'')
+    .replace(/PhD\.?\s*\(c\)\.?\s*/gi,'')
     .replace(/PhD\.?\s*/gi,'')
+    .replace(/\([^)]*\)/g,'')
+    .replace(/\([^)]*\)/g,'')
     .replace(/Mg\.\s*Ps\.?\s*/gi,'')
     .replace(/Mg\.?\s*/gi,'')
     .replace(/Ps\.?\s*/gi,'')
@@ -751,11 +753,16 @@ function initials(name) {
     .replace(/CP\.?\s*/gi,'')
     .replace(/MSc\.?\s*/gi,'')
     .replace(/Msc\.?\s*/gi,'')
+    .replace(/Juez\.?\s*/gi,'')
+    .replace(/Mag\.?\s*/gi,'')
+    // Remove any remaining token that is 1-3 uppercase letters followed by a dot
+    // e.g. "JF." "CP." "AF." "MG."
+    .replace(/\b[A-ZÁÉÍÓÚÑ]{1,3}\.\s*/g,'')
     .trim();
   const parts = cleaned.split(/[\s,]+/).filter(Boolean);
-  // Take first letter of first name + first letter of last name (skip particles)
-  const particles = new Set(['de','del','la','las','los','van','von','di','da','do']);
-  const meaningful = parts.filter(p => !particles.has(p.toLowerCase()));
+  // Skip particles (de, del, la, etc.) and take first meaningful first+last
+  const particles = new Set(['de','del','la','las','los','van','von','di','da','do','y','e']);
+  const meaningful = parts.filter(p => p.length > 1 && !particles.has(p.toLowerCase()));
   const first = meaningful[0]?.[0] || '';
   const last  = meaningful[1]?.[0] || '';
   return (first + last).toUpperCase();

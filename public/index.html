@@ -407,7 +407,10 @@ function convertTime(timeStr, dateISO, fromTZ, toTZ) {
   const toOffset   = getUTCOffsetForDate(dateRef, TZ_ZONES[toTZ]);
   const diff = toOffset - fromOffset;
 
-  let hours = parsed.h + diff;
+  // diff = toOffset - fromOffset is positive when destination is "further behind UTC"
+  // (e.g. CL UTC-4 -> MX UTC-6: diff=+2, but MX shows 2h EARLIER than CL)
+  // So we subtract: 18:00 CL - 2 = 16:00 MX ✓
+  let hours = parsed.h - diff;
   if (hours < 0)  hours += 24;
   if (hours >= 24) hours -= 24;
   return `${String(Math.round(hours)).padStart(2,'0')}:${parsed.m}`;

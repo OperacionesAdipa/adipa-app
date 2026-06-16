@@ -583,7 +583,8 @@ function addAllToCalendar() {
     const zoomUrl = s.zoom?.url || '';
     const zoomId  = s.zoom?.id  || '';
     const docentes = (s.docentes||[]).join(', ');
-    const desc    = esc(`Docente: ${docentes}\nZoom: ${zoomUrl}\nID: ${zoomId}`);
+    const desc    = esc(`Docente: ${docentes}\nLink Zoom: ${zoomUrl}\nID reunión: ${zoomId}`);
+    const loc     = esc(zoomUrl || 'Online vía Zoom');
     const sesLabel = s.numero < 900 ? `Sesión ${s.numero} - ` : '';
 
     ics += 'BEGIN:VEVENT\r\n';
@@ -592,7 +593,7 @@ function addAllToCalendar() {
     ics += `DTEND;TZID=${tzIana}:${dateStr}T${endH}\r\n`;
     ics += `SUMMARY:${sesLabel}${title}\r\n`;
     ics += `DESCRIPTION:${desc}\r\n`;
-    ics += `LOCATION:Online vía Zoom\r\n`;
+    ics += `LOCATION:${loc}\r\n`;
     ics += `STATUS:CONFIRMED\r\n`;
     ics += 'END:VEVENT\r\n';
   });

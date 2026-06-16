@@ -135,7 +135,7 @@ function normalizeItem(item) {
   const moduloNombre = findText(cols, ['nombre clase', 'nombre de la clase', 'titulo', 'título']);
 
   // Docentes
-  const docenteKey = findKey(cols, ['docentes (llenar)', 'docentes', 'docente', 'docente(s)']);
+  const docenteKey = findKey(cols, ['docente(s)', 'docentes (llenar)', 'docentes', 'docente']);
   const docentesRaw = cols[docenteKey]?.text || '';
   const docentes = docentesRaw
     .split(/[,;]/)
